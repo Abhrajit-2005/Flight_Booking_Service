@@ -19,12 +19,18 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
+        values: ['BOOKED', 'CANCELLED', 'PENDING', 'IN_PROGRESS'],
+        defaultValue: 'IN_PROGRESS',
+        allowNull: false
       },
       no_of_seats: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1
       },
       totalCost: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

@@ -14,11 +14,30 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   BookingTable.init({
-    flight_id: DataTypes.INTEGER,
-    user_id: DataTypes.INTEGER,
-    status: DataTypes.STRING,
-    no_of_seats: DataTypes.INTEGER,
-    totalCost: DataTypes.INTEGER
+    flight_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    status: {
+      type: DataTypes.STRING,
+      values: ['BOOKED', 'CANCELLED', 'PENDING', 'IN_PROGRESS'],
+      defaultValue: 'IN_PROGRESS',
+      allowNull: false
+    },
+    no_of_seats: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
+    totalCost: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: 'BookingTable',
