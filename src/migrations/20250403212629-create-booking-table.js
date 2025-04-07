@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM,
         values: ['BOOKED', 'CANCELLED', 'PENDING', 'IN_PROGRESS'],
         defaultValue: 'IN_PROGRESS',
         allowNull: false
