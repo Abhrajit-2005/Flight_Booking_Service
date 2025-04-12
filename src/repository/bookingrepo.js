@@ -31,7 +31,7 @@ class bookingRepo {
     }
     async update(id, data) {
         try {
-            const response = await Booking.update(data, {
+            const response = await BookingTable.update(data, {
                 where: {
                     id: id
                 }

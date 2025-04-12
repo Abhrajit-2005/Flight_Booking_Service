@@ -1,5 +1,5 @@
 const amqplib = require('amqplib');
-const { MESSAGE_BROKER_URL, EXCHANGE_NAME } = require('../config/serverConfig');
+const { MESSAGE_BROKER_URL, EXCHANGE_NAME, REMINDER_BINDING_KEY } = require('../config/server_config');
 
 const createChannel = async () => {
     try {
@@ -12,11 +12,11 @@ const createChannel = async () => {
     }
 }
 
-const subscribeMessage = async (channel, service, binding_key) => {
+const subscribeMessage = async (channel, service, REMINDER_BINDING_KEY) => {
     try {
-        const applicationQueue = await channel.assertQueue('QUEUE_NAME');
+        const applicationQueue = await channel.assertQueue('REMINDER_QUEUE', { durable: true });
 
-        channel.bindQueue(applicationQueue.queue, EXCHANGE_NAME, binding_key);
+        channel.bindQueue(applicationQueue.queue, EXCHANGE_NAME, REMINDER_BINDING_KEY);
 
         channel.consume(applicationQueue.queue, msg => {
             console.log('received data');
@@ -31,10 +31,18 @@ const subscribeMessage = async (channel, service, binding_key) => {
 
 }
 
-const publishMessage = async (channel, binding_key, message) => {
+const publishMessage = async (channel, REMINDER_BINDING_KEY, message) => {
     try {
-        await channel.assertQueue('QUEUE_NAME');
-        await channel.publish(EXCHANGE_NAME, binding_key, Buffer.from(message));
+        await channel.assertExchange(EXCHANGE_NAME, 'direct', { durable: true });
+        const applicationQueue = await channel.assertQueue('REMINDER_QUEUE', { durable: true });
+        await channel.bindQueue(applicationQueue.queue, EXCHANGE_NAME, REMINDER_BINDING_KEY);
+        const p = await channel.publish(EXCHANGE_NAME, REMINDER_BINDING_KEY, Buffer.from(message));
+        if (p) {
+            console.log('Message sent successfully');
+        }
+        else {
+            console.log('Message sent failed');
+        }
     } catch (error) {
         throw error;
     }
